@@ -34,7 +34,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 80px;
+            font-size: 50px;
             font-weight: 900;
             color: #FFFF00; /* 黄色 */
             text-shadow: 0 0 15px #FFA500, 0 0 30px #FF6347, 0 0 45px #FF1493;
@@ -169,9 +169,11 @@
             birthdayText.style.opacity = 1;
             // 12秒后重置到初始画面
             setTimeout(() => {
+                birthdayMusic.pause(); // 新增：暂停音乐
+                birthdayMusic.currentTime = 0; // 新增：音乐回到开头（方便下次从头播）
                 clearAllElements();
-                startBtn.style.display = "block"; // 重新显示开始按钮
-            }, 8000); // 12000毫秒 = 12秒
+                startBtn.style.display = "block";
+            }, 8000); // 8000毫秒 = 8秒
         }
 
         // 主流程（已加音乐播放功能）
@@ -207,7 +209,6 @@
     </script>
 </body>
 </html>
-
 
 
 
