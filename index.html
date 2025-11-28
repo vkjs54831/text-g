@@ -70,6 +70,10 @@
 <body>
     <!-- 生日快乐容器 -->
     <div class="birthday-text" id="birthdayText">生日快樂</div>
+    <!-- 音频代码（已帮你加好，只需后续替换文件名） -->
+    <audio id="birthdayMusic" preload="auto" loop>
+      <source src="https://raw.githubusercontent.com/vkjs54831/text-g/main/20251128.mp3" type="audio/mpeg">
+    </audio>
     <!-- 开始按钮 -->
     <button class="start-btn" id="startBtn">點擊開始！</button>
 
@@ -101,6 +105,7 @@
         let spreadWins = [];
         const birthdayText = document.getElementById("birthdayText");
         const startBtn = document.getElementById("startBtn");
+        const birthdayMusic = document.getElementById("birthdayMusic"); // 新增：获取音频元素
 
         // 创建爱心窗口函数
         function createHeartWindow(x, y, text, type = "heart") {
@@ -169,12 +174,18 @@
             }, 12000); // 12000毫秒 = 12秒
         }
 
-        // 主流程（点击按钮触发）
+        // 主流程（已加音乐播放功能）
         function mainAnimation() {
             // 隐藏按钮
             startBtn.style.display = "none";
             
-            // 动画流程：生成爱心 → 清空 → 满屏扩散 → 显示生日快乐并等待重置
+            // 关键：点击按钮时自动播放音乐（避开浏览器限制）
+            birthdayMusic.play().catch(err => {
+                alert("請先點擊空白處 在點擊開始");
+                startBtn.style.display = "block"; // 重新显示按钮
+            });
+            
+            // 原来的动画流程不变
             generateHeartStepByStep(0, () => {
                 setTimeout(() => {
                     heartWins.forEach(win => win && win.remove());
