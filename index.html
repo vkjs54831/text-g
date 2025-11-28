@@ -28,13 +28,13 @@
             font-weight: bold;
             transition: all 0.2s ease;
         }
-        /* 生日快乐样式（响应式字体） */
+        /* 生日快乐样式（优化响应式：手机字体稍大+行间距） */
         .birthday-text {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: clamp(30px, 15vw, 80px); /* 手机30px，电脑最大80px */
+            font-size: clamp(40px, 12vw, 80px); /* 手机最小40px（更清晰），电脑最大80px */
             font-weight: 900;
             color: #FFFF00;
             text-shadow: 0 0 12px #FFA500, 0 0 24px #FF6347, 0 0 36px #FF1493;
@@ -42,23 +42,29 @@
             opacity: 0;
             transition: opacity 1.5s ease-in-out;
             text-align: center;
-            max-width: 90%;
+            max-width: 95%; /* 手机端更宽，减少换行压力 */
+            line-height: 1.3; /* 行间距优化，不拥挤 */
         }
-        /* 电脑版文字（默认显示） */
+        /* 电脑版文字（默认显示，保持原样） */
         .desktop-text {
             display: block;
         }
-        /* 手机版文字（默认隐藏） */
+        /* 手机版文字（默认隐藏，优化换行） */
         .mobile-text {
             display: none;
         }
-        /* 媒体查询：屏幕宽度<768px（手机）时切换显示 */
+        /* 媒体查询：屏幕宽度<768px（手机）时切换 */
         @media (max-width: 768px) {
             .desktop-text {
-                display: none; /* 隐藏电脑版 */
+                display: none;
             }
             .mobile-text {
-                display: block; /* 显示手机版 */
+                display: block;
+            }
+            /* 手机端按钮稍小，更适配屏幕 */
+            .start-btn {
+                padding: 16px 32px;
+                font-size: 20px;
             }
         }
         /* 开始按钮样式 */
@@ -89,10 +95,10 @@
 <body>
     <!-- 生日快乐容器：电脑/手机双版本 -->
     <div class="birthday-text" id="birthdayText">
-        <!-- 电脑版（少换行，保持原样式） -->
+        <!-- 电脑版（保持原样式：2行） -->
         <span class="desktop-text">生日快樂<br>願妳被世界溫柔以待</span>
-        <!-- 手机版（多换行，紧凑显示） -->
-        <span class="mobile-text">生日快樂<br>願妳被<br>世界<br>溫柔<br>以待</span>
+        <!-- 手机版（优化换行：3行，“生日快樂”完整一行） -->
+        <span class="mobile-text">生日快樂<br>願妳被世界<br>溫柔以待</span>
     </div>
     <!-- 音频代码 -->
     <audio id="birthdayMusic" preload="auto" loop>
@@ -185,7 +191,7 @@
             birthdayText.style.opacity = 0;
         }
 
-        // 显示生日快乐+12秒后重置（含音乐停止）
+        // 显示生日快乐+9秒后重置（含音乐停止）
         function showBirthdayTextAndReset() {
             birthdayText.style.opacity = 1;
             setTimeout(() => {
@@ -223,5 +229,3 @@
     </script>
 </body>
 </html>
-
-
