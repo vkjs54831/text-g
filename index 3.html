@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生日</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            margin: 0; 
+            padding: 0; 
+            height: 100vh; 
+            background: #000; 
+            overflow: hidden; 
+            font-family: "微軟雅黑", sans-serif;
+        }
+        /* 爱心小窗口样式（不变） */
+        .heart-window {
+            position: absolute;
+            width: 75px;
+            height: 30px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+        /* 大大的生日快樂 */
+        .birthday-text {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 90px; /* 加大字体 */
+            font-weight: 900;
+            color: #FFFF00; /* 金色 */
+            text-shadow: 0 0 15px #FFA500, 0 0 30px #FF6347, 0 0 45px #FF1493; /* 增强光晕 */
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out; /* 更慢的淡入，更有仪式感 */
+        }
+    </style>
+</head>
+<body>
+    <!-- 生日快樂容器 -->
+    <div class="birthday-text" id="birthdayText">生日快樂</div>
+
+    <script>
+        // 1. 配置参数（已修改spreadDelay为20ms，满屏速度变慢）
+        const MESSAGES = [
+            "保持好心情", "好好愛自己", "我想你了", "好好吃飯",
+            "多喝熱水", "别熬夜", "順順利利", "健健康康",
+            "平平安安", "永遠漂亮", "天天開心", "好運連連",
+            "溫柔以待", "多穿衣服", "治愈一切", "元氣滿滿",
+            "永遠可愛", "生日快樂", "心想事成", "我愛妳"
+        ];
+        const HEART_COLORS = [
+            "#FFB6C1", "#FFC0CB", "#FFA07A", "#FF69B4", "#FFB9D9",
+            "#FFE4E1", "#FFD1DC", "#F0E68C", "#98FB98", "#ADD8E6",
+            "#E6E6FA", "#F8C8DC", "#FFEBCD", "#FFA500", "#FF7F50",
+            "#DDA0DD", "#F0FFF0", "#FAF0E6", "#FFE4B5", "#FFC1C1"
+        ];
+        const n = 200; // 爱心窗口数量
+        const scale = Math.min(window.innerWidth, window.innerHeight) / 40; // 爱心大小
+        const upOffset = 100; // 上移偏移量
+        const delay = 20; // 爱心生成间隔（ms）
+        const spreadCount = 400; // 满屏数量
+        // 👇 核心修改：从5ms改成20ms，满屏扩散速度变慢4倍，慢慢铺满
+        const spreadDelay = 20; 
+
+        // 存储窗口实例
+        let heartWins = [];
+        let spreadWins = [];
+        const birthdayText = document.getElementById("birthdayText");
+
+        // 2. 创建爱心窗口函数（不变）
+        function createHeartWindow(x, y, text, type = "heart") {
+            const div = document.createElement("div");
+            div.className = "heart-window";
+            div.textContent = text;
+            div.style.left = `${x}px`;
+            div.style.top = `${y}px`;
+            div.style.backgroundColor = HEART_COLORS[Math.floor(Math.random() * HEART_COLORS.length)];
+            document.body.appendChild(div);
+            if (type === "heart") heartWins.push(div);
+            else spreadWins.push(div);
+            return div;
+        }
+
+        // 3. 逐步生成爱心（不变）
+        function generateHeartStepByStep(index = 0, callback) {
+            if (index >= n) {
+                callback();
+                return;
+            }
+            
+            const t = (index / n) * 2 * Math.PI;
+            const x = window.innerWidth / 2 + scale * (16 * Math.sin(t) ** 3);
+            const y = (window.innerHeight / 2 - upOffset) - scale * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+            const text = MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
+            createHeartWindow(x, y, text, "heart");
+            
+            setTimeout(() => {
+                generateHeartStepByStep(index + 1, callback);
+            }, delay);
+        }
+
+        // 4. 逐步满屏扩散（慢节奏）
+        function spreadFullScreenStepByStep(index = 0, callback) {
+            if (index >= spreadCount) {
+                callback();
+                return;
+            }
+            
+            const x = Math.random() * (window.innerWidth - 75);
+            const y = Math.random() * (window.innerHeight - 30);
+            const text = MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
+            createHeartWindow(x, y, text, "spread");
+            
+            setTimeout(() => {
+                spreadFullScreenStepByStep(index + 1, callback);
+            }, spreadDelay);
+        }
+
+        // 5. 清空满屏小窗口（保留黑色背景）
+        function clearSpreadWindows() {
+            spreadWins.forEach(win => win && win.remove());
+            spreadWins = [];
+        }
+
+        // 6. 显示大大的生日快樂
+        function showBirthdayText() {
+            birthdayText.style.opacity = 1;
+        }
+
+        // 7. 主流程（满屏→清空→显示大文字）
+        function mainAnimation() {
+            // 步骤1：逐步生成爱心 → 停留2秒
+            generateHeartStepByStep(0, () => {
+                setTimeout(() => {
+                    // 步骤2：删除爱心窗口
+                    heartWins.forEach(win => win && win.remove());
+                    heartWins = [];
+                    // 步骤3：慢慢满屏扩散 → 扩散完成后执行后续操作
+                    spreadFullScreenStepByStep(0, () => {
+                        setTimeout(() => {
+                            clearSpreadWindows(); // 先清空所有满屏小窗口
+                            setTimeout(() => {
+                                showBirthdayText(); // 清空后过渡，显示大文字
+                            }, 300);
+                        }, 800); // 满屏效果停留0.8秒（因为扩散变慢，停留久一点更协调）
+                    });
+                }, 2000); // 爱心生成后停留2秒
+            });
+        }
+
+        // 启动动画（只执行一次）
+        mainAnimation();
+    </script>
+</body>
+</html>
