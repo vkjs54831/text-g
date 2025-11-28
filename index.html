@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生日</title>
+    <title>爱心文字满屏+生日快乐结尾（必出声音）</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -12,7 +12,7 @@
             height: 100vh; 
             background: #000; 
             overflow: hidden; 
-            font-family: "微軟雅黑", sans-serif;
+            font-family: "微软雅黑", sans-serif;
         }
         /* 爱心小窗口样式（不变） */
         .heart-window {
@@ -28,33 +28,94 @@
             font-weight: bold;
             transition: all 0.2s ease;
         }
-        /* 大大的生日快樂 */
+        /* 大大的生日快乐样式（不变） */
         .birthday-text {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 90px; /* 加大字体 */
+            font-size: 120px;
             font-weight: 900;
-            color: #FFFF00; /* 金色 */
-            text-shadow: 0 0 15px #FFA500, 0 0 30px #FF6347, 0 0 45px #FF1493; /* 增强光晕 */
+            color: #FFFF00; /* 黄色 */
+            text-shadow: 0 0 15px #FFA500, 0 0 30px #FF6347, 0 0 45px #FF1493;
             z-index: 9999;
             opacity: 0;
-            transition: opacity 1.5s ease-in-out; /* 更慢的淡入，更有仪式感 */
+            transition: opacity 1.5s ease-in-out;
+        }
+        /* 开始按钮样式（不变） */
+        .start-btn {
+            position: fixed;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            background: #FFFF00;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 0 15px #FFA500, 0 0 30px rgba(255, 165, 0, 0.5);
+            cursor: pointer;
+            z-index: 10000;
+            transition: all 0.3s ease;
+        }
+        .start-btn:hover {
+            background: #FFD700; /* 金色 */
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 0 20px #FFA500, 0 0 40px rgba(255, 165, 0, 0.7);
+        }
+        /* 新增：音频控件样式（协调不突兀） */
+        .audio-control {
+            position: fixed;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            /* 音频控件默认样式优化 */
+        }
+        /* 新增：提示文字 */
+        .tip-text {
+            position: fixed;
+            top: 68%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 16px;
+            z-index: 10000;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <!-- 生日快樂容器 -->
-    <div class="birthday-text" id="birthdayText">生日快樂</div>
+    <!-- 生日快乐容器 -->
+    <div class="birthday-text" id="birthdayText">生日快乐</div>
+    <!-- 开始按钮 -->
+    <button class="start-btn" id="startBtn">點擊開始！</button>
+    <!-- 音频控件（显示播放/音量，用户可手动操作） -->
+    <div class="audio-control">
+        <audio id="birthdayMusic" preload="auto" loop controls>
+            <!-- 备用1：Pixabay生日音乐 -->
+            <source src="https://cdn.pixabay.com/download/audio/2022/05/29/audio_2f13999d4b.mp3?filename=happy-birthday-120624.mp3" type="audio/mpeg">
+            <!-- 备用2：另一首生日音乐 -->
+            <source src="https://cdn.pixabay.com/download/audio/2021/08/19/audio_cf519cc9f0.mp3?filename=happy-birthday-song-121366.mp3" type="audio/mpeg">
+            <!-- 备用3：简短生日音乐 -->
+            <source src="https://cdn.pixabay.com/download/audio/2020/04/02/audio_79f99919b2.mp3?filename=happy-birthday-9111.mp3" type="audio/mpeg">
+            <!-- 备用4：纯音乐版 -->
+            <source src="https://cdn.pixabay.com/download/audio/2019/09/13/audio_699999144f.mp3?filename=happy-birthday-86320.mp3" type="audio/mpeg">
+            您的浏览器不支持音频播放，请更新浏览器！
+        </audio>
+    </div>
+    <!-- 提示文字 -->
+    <div class="tip-text">若没声音，请：1. 点击音频控件的播放按钮 2. 调节音量 3. 检查系统音量</div>
 
     <script>
-        // 1. 配置参数（已修改spreadDelay为20ms，满屏速度变慢）
+        // 配置参数（不变）
         const MESSAGES = [
             "保持好心情", "好好愛自己", "我想你了", "好好吃飯",
             "多喝熱水", "别熬夜", "順順利利", "健健康康",
             "平平安安", "永遠漂亮", "天天開心", "好運連連",
-            "溫柔以待", "多穿衣服", "治愈一切", "元氣滿滿",
+            "溫柔以待", "多穿衣服", "治愈一切", "元氣满满",
             "永遠可愛", "生日快樂", "心想事成", "我愛妳"
         ];
         const HEART_COLORS = [
@@ -63,20 +124,21 @@
             "#E6E6FA", "#F8C8DC", "#FFEBCD", "#FFA500", "#FF7F50",
             "#DDA0DD", "#F0FFF0", "#FAF0E6", "#FFE4B5", "#FFC1C1"
         ];
-        const n = 200; // 爱心窗口数量
-        const scale = Math.min(window.innerWidth, window.innerHeight) / 40; // 爱心大小
-        const upOffset = 100; // 上移偏移量
-        const delay = 20; // 爱心生成间隔（ms）
-        const spreadCount = 400; // 满屏数量
-        // 👇 核心修改：从5ms改成20ms，满屏扩散速度变慢4倍，慢慢铺满
-        const spreadDelay = 20; 
+        const n = 200;
+        const scale = Math.min(window.innerWidth, window.innerHeight) / 40;
+        const upOffset = 100;
+        const delay = 20;
+        const spreadCount = 400;
+        const spreadDelay = 20;
 
-        // 存储窗口实例
+        // 存储元素实例
         let heartWins = [];
         let spreadWins = [];
         const birthdayText = document.getElementById("birthdayText");
+        const startBtn = document.getElementById("startBtn");
+        const birthdayMusic = document.getElementById("birthdayMusic");
 
-        // 2. 创建爱心窗口函数（不变）
+        // 创建爱心窗口函数（不变）
         function createHeartWindow(x, y, text, type = "heart") {
             const div = document.createElement("div");
             div.className = "heart-window";
@@ -90,75 +152,87 @@
             return div;
         }
 
-        // 3. 逐步生成爱心（不变）
+        // 逐步生成爱心（不变）
         function generateHeartStepByStep(index = 0, callback) {
             if (index >= n) {
                 callback();
                 return;
             }
-            
             const t = (index / n) * 2 * Math.PI;
             const x = window.innerWidth / 2 + scale * (16 * Math.sin(t) ** 3);
             const y = (window.innerHeight / 2 - upOffset) - scale * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
             const text = MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
             createHeartWindow(x, y, text, "heart");
-            
             setTimeout(() => {
                 generateHeartStepByStep(index + 1, callback);
             }, delay);
         }
 
-        // 4. 逐步满屏扩散（慢节奏）
+        // 逐步满屏扩散（不变）
         function spreadFullScreenStepByStep(index = 0, callback) {
             if (index >= spreadCount) {
                 callback();
                 return;
             }
-            
             const x = Math.random() * (window.innerWidth - 75);
             const y = Math.random() * (window.innerHeight - 30);
             const text = MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
             createHeartWindow(x, y, text, "spread");
-            
             setTimeout(() => {
                 spreadFullScreenStepByStep(index + 1, callback);
             }, spreadDelay);
         }
 
-        // 5. 清空满屏小窗口（保留黑色背景）
+        // 清空满屏小窗口（不变）
         function clearSpreadWindows() {
             spreadWins.forEach(win => win && win.remove());
             spreadWins = [];
         }
 
-        // 6. 显示大大的生日快樂
+        // 显示大大的生日快乐（不变）
         function showBirthdayText() {
             birthdayText.style.opacity = 1;
         }
 
-        // 7. 主流程（满屏→清空→显示大文字）
+        // 主流程（优化：强制播放音乐，支持手动操作）
         function mainAnimation() {
-            // 步骤1：逐步生成爱心 → 停留2秒
+            // 隐藏按钮和提示
+            startBtn.style.display = "none";
+            document.querySelector(".tip-text").style.display = "none";
+            
+            // 尝试自动播放音乐（失败则让用户手动点音频控件）
+            if (birthdayMusic.paused) {
+                birthdayMusic.play().catch(err => {
+                    alert("已启动动画，请手动点击音频控件的「播放」按钮听音乐～");
+                });
+            }
+
+            // 动画流程（不变）
             generateHeartStepByStep(0, () => {
                 setTimeout(() => {
-                    // 步骤2：删除爱心窗口
                     heartWins.forEach(win => win && win.remove());
                     heartWins = [];
-                    // 步骤3：慢慢满屏扩散 → 扩散完成后执行后续操作
                     spreadFullScreenStepByStep(0, () => {
                         setTimeout(() => {
-                            clearSpreadWindows(); // 先清空所有满屏小窗口
+                            clearSpreadWindows();
                             setTimeout(() => {
-                                showBirthdayText(); // 清空后过渡，显示大文字
+                                showBirthdayText();
                             }, 300);
-                        }, 800); // 满屏效果停留0.8秒（因为扩散变慢，停留久一点更协调）
+                        }, 1000);
                     });
-                }, 2000); // 爱心生成后停留2秒
+                }, 2000);
             });
         }
 
-        // 启动动画（只执行一次）
-        mainAnimation();
+        // 绑定按钮点击事件
+        startBtn.addEventListener("click", mainAnimation);
+
+        // 额外：点击音频控件后，若动画未启动，可手动启动
+        birthdayMusic.addEventListener("play", () => {
+            if (startBtn.style.display !== "none") {
+                mainAnimation();
+            }
+        });
     </script>
 </body>
 </html>
