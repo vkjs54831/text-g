@@ -94,18 +94,12 @@
     <button class="start-btn" id="startBtn">點擊開始！</button>
     <!-- 音频控件（显示播放/音量，用户可手动操作） -->
     <div class="audio-control">
-        <audio id="birthdayMusic" preload="auto" loop controls>
-            <!-- 备用1：Pixabay生日音乐 -->
-            <source src="https://cdn.pixabay.com/download/audio/2022/05/29/audio_2f13999d4b.mp3?filename=happy-birthday-120624.mp3" type="audio/mpeg">
-            <!-- 备用2：另一首生日音乐 -->
-            <source src="https://cdn.pixabay.com/download/audio/2021/08/19/audio_cf519cc9f0.mp3?filename=happy-birthday-song-121366.mp3" type="audio/mpeg">
-            <!-- 备用3：简短生日音乐 -->
-            <source src="https://cdn.pixabay.com/download/audio/2020/04/02/audio_79f99919b2.mp3?filename=happy-birthday-9111.mp3" type="audio/mpeg">
-            <!-- 备用4：纯音乐版 -->
-            <source src="https://cdn.pixabay.com/download/audio/2019/09/13/audio_699999144f.mp3?filename=happy-birthday-86320.mp3" type="audio/mpeg">
-            您的浏览器不支持音频播放，请更新浏览器！
-        </audio>
-    </div>
+    <audio id="birthdayMusic" preload="auto" loop controls>
+        <!-- 只保留这1个最稳定的生日音乐链接 -->
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/29/audio_2f13999d4b.mp3?filename=happy-birthday-120624.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放，请更新浏览器！
+    </audio>
+</div>
     <!-- 提示文字 -->
     <div class="tip-text">若没声音，请：1. 点击音频控件的播放按钮 2. 调节音量 3. 检查系统音量</div>
 
@@ -236,3 +230,4 @@
     </script>
 </body>
 </html>
+
