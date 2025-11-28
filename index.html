@@ -14,7 +14,7 @@
             overflow: hidden; 
             font-family: "微软雅黑", sans-serif;
         }
-        /* 爱心小窗口样式（不变） */
+        /* 爱心小窗口样式 */
         .heart-window {
             position: absolute;
             width: 75px;
@@ -28,7 +28,7 @@
             font-weight: bold;
             transition: all 0.2s ease;
         }
-        /* 大大的生日快乐样式（不变） */
+        /* 大大的生日快乐样式 */
         .birthday-text {
             position: fixed;
             top: 50%;
@@ -42,10 +42,10 @@
             opacity: 0;
             transition: opacity 1.5s ease-in-out;
         }
-        /* 开始按钮样式（不变） */
+        /* 开始按钮样式 */
         .start-btn {
             position: fixed;
-            top: 45%;
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             padding: 20px 40px;
@@ -65,26 +65,6 @@
             transform: translate(-50%, -50%) scale(1.1);
             box-shadow: 0 0 20px #FFA500, 0 0 40px rgba(255, 165, 0, 0.7);
         }
-        /* 新增：音频控件样式（协调不突兀） */
-        .audio-control {
-            position: fixed;
-            top: 60%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10000;
-            /* 音频控件默认样式优化 */
-        }
-        /* 新增：提示文字 */
-        .tip-text {
-            position: fixed;
-            top: 68%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #fff;
-            font-size: 16px;
-            z-index: 10000;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -92,19 +72,9 @@
     <div class="birthday-text" id="birthdayText">生日快樂</div>
     <!-- 开始按钮 -->
     <button class="start-btn" id="startBtn">點擊開始！</button>
-    <!-- 音频控件（显示播放/音量，用户可手动操作） -->
-    <div class="audio-control">
-    <audio id="birthdayMusic" preload="auto" loop controls>
-        <!-- 只保留这1个最稳定的生日音乐链接 -->
-        <source src="https://cdn.pixabay.com/download/audio/2022/05/29/audio_2f13999d4b.mp3?filename=happy-birthday-120624.mp3" type="audio/mpeg">
-        您的浏览器不支持音频播放，请更新浏览器！
-    </audio>
-</div>
-    <!-- 提示文字 -->
-    <div class="tip-text">若没声音，请：1. 点击音频控件的播放按钮 2. 调节音量 3. 检查系统音量</div>
 
     <script>
-        // 配置参数（不变）
+        // 配置参数（已设置上移30px+左移20px）
         const MESSAGES = [
             "保持好心情", "好好愛自己", "我想你了", "好好吃飯",
             "多喝熱水", "别熬夜", "順順利利", "健健康康",
@@ -120,7 +90,8 @@
         ];
         const n = 200;
         const scale = Math.min(window.innerWidth, window.innerHeight) / 40;
-        const upOffset = 100;
+        const upOffset = 30; // 上移30px（数值越大越靠上）
+        const leftOffset = 20; // 左移20px（数值越大越靠左）
         const delay = 20;
         const spreadCount = 400;
         const spreadDelay = 20;
@@ -130,9 +101,8 @@
         let spreadWins = [];
         const birthdayText = document.getElementById("birthdayText");
         const startBtn = document.getElementById("startBtn");
-        const birthdayMusic = document.getElementById("birthdayMusic");
 
-        // 创建爱心窗口函数（不变）
+        // 创建爱心窗口函数
         function createHeartWindow(x, y, text, type = "heart") {
             const div = document.createElement("div");
             div.className = "heart-window";
@@ -146,14 +116,15 @@
             return div;
         }
 
-        // 逐步生成爱心（不变）
+        // 逐步生成爱心（已上移+左移）
         function generateHeartStepByStep(index = 0, callback) {
             if (index >= n) {
                 callback();
                 return;
             }
             const t = (index / n) * 2 * Math.PI;
-            const x = window.innerWidth / 2 + scale * (16 * Math.sin(t) ** 3);
+            // 左移：x坐标减去leftOffset；上移：通过upOffset实现
+            const x = (window.innerWidth / 2 - leftOffset) + scale * (16 * Math.sin(t) ** 3);
             const y = (window.innerHeight / 2 - upOffset) - scale * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
             const text = MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
             createHeartWindow(x, y, text, "heart");
@@ -162,7 +133,7 @@
             }, delay);
         }
 
-        // 逐步满屏扩散（不变）
+        // 逐步满屏扩散
         function spreadFullScreenStepByStep(index = 0, callback) {
             if (index >= spreadCount) {
                 callback();
@@ -177,40 +148,42 @@
             }, spreadDelay);
         }
 
-        // 清空满屏小窗口（不变）
-        function clearSpreadWindows() {
+        // 清空所有生成的元素
+        function clearAllElements() {
+            // 清除爱心和满屏元素
+            heartWins.forEach(win => win && win.remove());
             spreadWins.forEach(win => win && win.remove());
+            heartWins = [];
             spreadWins = [];
+            // 隐藏生日快乐文字
+            birthdayText.style.opacity = 0;
         }
 
-        // 显示大大的生日快乐（不变）
-        function showBirthdayText() {
+        // 显示大大的生日快乐，并设置12秒后重置
+        function showBirthdayTextAndReset() {
             birthdayText.style.opacity = 1;
+            // 12秒后重置到初始画面
+            setTimeout(() => {
+                clearAllElements();
+                startBtn.style.display = "block"; // 重新显示开始按钮
+            }, 12000); // 12000毫秒 = 12秒
         }
 
-        // 主流程（优化：强制播放音乐，支持手动操作）
+        // 主流程（点击按钮触发）
         function mainAnimation() {
-            // 隐藏按钮和提示
+            // 隐藏按钮
             startBtn.style.display = "none";
-            document.querySelector(".tip-text").style.display = "none";
             
-            // 尝试自动播放音乐（失败则让用户手动点音频控件）
-            if (birthdayMusic.paused) {
-                birthdayMusic.play().catch(err => {
-                    alert("已启动动画，请手动点击音频控件的「播放」按钮听音乐～");
-                });
-            }
-
-            // 动画流程（不变）
+            // 动画流程：生成爱心 → 清空 → 满屏扩散 → 显示生日快乐并等待重置
             generateHeartStepByStep(0, () => {
                 setTimeout(() => {
                     heartWins.forEach(win => win && win.remove());
                     heartWins = [];
                     spreadFullScreenStepByStep(0, () => {
                         setTimeout(() => {
-                            clearSpreadWindows();
+                            clearAllElements(); // 先清空满屏元素
                             setTimeout(() => {
-                                showBirthdayText();
+                                showBirthdayTextAndReset(); // 显示生日快乐并启动12秒倒计时
                             }, 300);
                         }, 1000);
                     });
@@ -220,14 +193,6 @@
 
         // 绑定按钮点击事件
         startBtn.addEventListener("click", mainAnimation);
-
-        // 额外：点击音频控件后，若动画未启动，可手动启动
-        birthdayMusic.addEventListener("play", () => {
-            if (startBtn.style.display !== "none") {
-                mainAnimation();
-            }
-        });
     </script>
 </body>
 </html>
-
