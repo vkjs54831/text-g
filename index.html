@@ -12,7 +12,7 @@
             height: 100vh; 
             background: #000; 
             overflow: hidden; 
-            font-family: "微软雅黑", sans-serif;
+            font-family: "微軟雅黑", sans-serif;
         }
         /* 爱心小窗口样式 */
         .heart-window {
@@ -34,7 +34,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 120px;
+            font-size: 80px;
             font-weight: 900;
             color: #FFFF00; /* 黄色 */
             text-shadow: 0 0 15px #FFA500, 0 0 30px #FF6347, 0 0 45px #FF1493;
@@ -69,7 +69,7 @@
 </head>
 <body>
     <!-- 生日快乐容器 -->
-    <div class="birthday-text" id="birthdayText">生日快樂</div>
+    <div class="birthday-text" id="birthdayText">生日快樂<br>願妳被世界溫柔以待</div>
     <!-- 音频代码（已帮你加好，只需后续替换文件名） -->
     <audio id="birthdayMusic" preload="auto" loop>
       <source src="https://raw.githubusercontent.com/vkjs54831/text-g/main/Goodbye.mp3" type="audio/mpeg">
@@ -80,11 +80,11 @@
     <script>
         // 配置参数（已设置上移30px+左移20px）
         const MESSAGES = [
-            "保持好心情", "好好愛自己", "我想你了", "好好吃飯",
+            "保持好心情", "好好愛自己", "我想妳了", "好好吃飯",
             "多喝熱水", "别熬夜", "順順利利", "健健康康",
             "平平安安", "永遠漂亮", "天天開心", "好運連連",
             "溫柔以待", "多穿衣服", "治愈一切", "元氣满满",
-            "永遠可愛", "生日快樂", "心想事成", "我愛妳"
+            "永遠可愛", "生日快樂", "心想事成", "我永遠愛妳"
         ];
         const HEART_COLORS = [
             "#FFB6C1", "#FFC0CB", "#FFA07A", "#FF69B4", "#FFB9D9",
@@ -207,5 +207,6 @@
     </script>
 </body>
 </html>
+
 
 
